@@ -1,0 +1,124 @@
+<!-- find me here > https://github.com/Yaswanth-C -->
+{% extends 'base.html' %}
+{% block title %}
+Shorten any URL
+{% endblock %}
+{% block content %}
+<div class="nav-h">
+    URL Shortener
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-5" id="f-cn">
+            <div class="custom">
+                <div class="h-bg">
+                    <h3 class="title">URL Shortener</h3>
+                </div>
+                <div class="card-body">
+                    <form action="" class="url-form" id="form" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <label for="full_url">Enter a long url</label>
+                                <input type="text" name="full_url" id="full_url" class="input-t inp-hover" placeholder=" " required>
+                                <small class="text-muted">A long URL of your choice.</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="tiny">Customize your link <i style="font-weight: 100;font-size: small;">(optional)</i> </label>
+                                <input type="text" name="tiny_url" id="tiny_url" class="input-t inp-hover" placeholder=" ">
+                                <small class="text-muted">Aa alias for your URL.</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"><input type="submit" class="button" id="button" value="Shorten URL"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br>
+            <div>
+                <div class="alert alert-success alert-dismissible fade show shadow" role="alert" id="success-res" style="display: none;">
+                    <button type="button" class="close close-scc">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <strong>Here is your link !!</strong>
+                    <br><span id="success-msg"></span>
+                </div>
+
+                <div class="alert alert-danger alert-dismissible fade show shadow" role="alert" id="error-res" style="display: none;">
+                    <button type="button" class="close close-err">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <strong>oops !</strong>
+                    <br><span id="error-msg"></span>
+                </div>
+                
+
+            </div>   
+        </div>
+        <div class="col-sm-12 col-md-5 col-lg-6 offset-lg-1" id="jj">
+            <div style="margin-top: 100px;"></div>
+            <h3 class="bga">Most visited</h3>
+            <div class="most-visit">
+                {% for i in data %}
+                <div class="list-item">
+                    <span style="font-weight: 600;">#{{ forloop.counter }}</span>
+                    <span><a href="http://{{request.META.HTTP_HOST}}/{{ i.tiny_url }}" target="_blank" rel="noopener noreferrer">http://{{request.META.HTTP_HOST}}/{{ i.tiny_url }}</a></span>
+                    <span class="badge bg-purple">{{ i.clicks }} clicks</span>
+                    <hr style="background-color: whitesmoke;">
+                </div>
+                {% empty %}
+                <div class="list-item">
+                    The most visited URLs will appear here.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>        
+</div>
+<br><br><br>
+<div id="pko90-9" style="display: none;">{{ request.META.HTTP_HOST }}</div>
+<div id="res"></div>
+
+<script>
+$(document).ready(function(){
+
+    $('.close-scc').on('click',function(){$('#success-res').hide();$('html,body').animate({scrollTop:0},1300);});
+    $('.close-err').on('click',function(){$('#error-res').hide();$('html,body').animate({scrollTop:0},1300);});
+
+    $('#success-res, #error-res').hide();
+    $('#form').submit(function(e){
+        $('#success-res, #error-res').hide();
+        e.preventDefault();
+        var serialisedData = $(this).serialize();
+        $.ajax({
+            type : 'POST',
+            url : '',
+            data : serialisedData,
+            success:function(response){
+                var siteLink = $('#pko90-9').text();
+                $('#success-msg').html(`Link : <a href="http://${siteLink}/${response['tiny_url']}">http://${siteLink}/${response['tiny_url']}</a>`);
+                $('#error-res').hide();
+                $('#success-res').show();
+                $('html,body').animate({scrollTop:$(document).height()},1500);
+            },
+            error:function(response){
+                var errors = response['responseJSON']['error'];
+                $('#error-msg').html('');
+                for(var error of errors){
+                    $('#error-msg').append(`${error}<br>`);
+                }
+                $('#error-res').show();
+                $('#success-res').hide();
+                $('html,body').animate({scrollTop:$(document).height()},1500);
+            },
+            
+        })
+    });
+});
+</script>
+{% endblock %}

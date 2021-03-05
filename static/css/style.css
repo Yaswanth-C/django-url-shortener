@@ -1,0 +1,99 @@
+/* find me here > https://github.com/Yaswanth-C */
+body{
+    /* background-image: linear-gradient(to top left, rgb(247, 23, 191),rgb(102, 18, 158),rgb(0, 102, 255)); */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: rgb(252, 240, 250);
+}
+.nav-h{
+    background-image: linear-gradient(to bottom left,rgb(255, 0, 242),rgb(85, 23, 104));
+    height:70px;
+    padding: 11px;
+    padding-left: 20px;
+    color: whitesmoke;
+    font-weight: 700;
+    font-size: xx-large;
+}
+.custom{
+    position: relative;
+    width:100%;
+    height: 428px;
+    overflow: hidden;
+    background-image: linear-gradient(to top right,rgb(184, 23, 184),rgb(116, 43, 122));
+    border-radius: 3px;
+    box-shadow: 1px 1px 10px 1px gray;
+    margin-top: 100px;
+}
+.h-bg{
+    height: 90px;
+}
+h3.bga{
+    background: linear-gradient(to top left,rgb(255, 2, 150),rgb(155, 3, 201));
+    background-clip: text;
+    width: fit-content;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.title{
+    padding: 23px;
+    text-align: center;
+    color: whitesmoke;
+}
+.card-body{
+    position: absolute;
+    /* left: 1%; */
+    width: 100%;
+    border-radius: 50px 0px 50px 5px;
+    background-color: white;
+}
+.row{
+    margin-top: 20px;
+}
+.input-t{
+    width: 100%;
+    height: 40px;
+    border:none;
+    outline: none;
+    background-color: white;
+    border-bottom: 2px solid grey;
+}
+.inp-hover:focus{
+    border-bottom: 2px solid rgb(177, 24, 182);
+}
+.inp-hover:not(:placeholder-shown){
+    background-color: rgb(249, 214, 253);
+}
+.button{
+    background-image: linear-gradient(to right,rgb(199, 52, 155),rgb(103, 37, 109));
+    color: whitesmoke;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+}
+#button:hover{
+    background-image: linear-gradient(to left,rgb(199, 52, 155),rgb(103, 37, 109));
+}
+input[type='text'],input[type='password']{
+    font-weight: 600;
+}
+label{
+    font-weight: 600;
+}
+.most-visit{
+    background-image: linear-gradient(to left,rgb(218, 194, 250),rgb(214, 168, 216));
+    color: rgb(59, 12, 59);
+    border-radius: 2px;
+    border: 1px solid purple;
+}
+.list-item{
+    padding: 10px;
+}
+.bg-purple{
+    color: white;
+    background-image: linear-gradient(rgb(109, 41, 109),rgb(66, 18, 66));
+}
+.alert{
+    border-radius: 0px;
+}
