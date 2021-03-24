@@ -19,13 +19,13 @@ def app_root_view(request):
             try:
                 try:
                     error.append(error1.get('full_url','')[0].get('message'))
-                except:
+                except IndexError:
                     pass
                 try:
                     error.append(error1.get('tiny_url','')[0].get('message'))
-                except:
+                except IndexError:
                     pass
-            except:
+            except Exception:
                 pass
             return JsonResponse({'error':error},status=400)
     else:
