@@ -1,9 +1,11 @@
-import json
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from .forms import UrlForm
 from .models import TinyUrls
 import re
+
+from .import qr_generator
+
 # Create your views here.
 
 def app_root_view(request):
@@ -12,7 +14,10 @@ def app_root_view(request):
         if form.is_valid():
             k=form.save()
             db_data = TinyUrls.objects.get(entry_hash=k.entry_hash)
-            return JsonResponse({'tiny_url':db_data.tiny_url},status=200)
+            data_to_send = qr_generator.qr_code(db_data,request.META['HTTP_HOST'])  # get the qrcode for the urls
+            data_to_send["tiny_url"]=db_data.tiny_url
+            # this is where the shortrned url is returned
+            return JsonResponse(data_to_send,status=200)
         else:
             error1 = form.errors.get_json_data()
             error = list()

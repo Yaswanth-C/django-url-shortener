@@ -39,7 +39,7 @@ Shorten any URL
             </div>
             <br>
             <div>
-                <div class="alert alert-success alert-dismissible fade show shadow" role="alert" id="success-res" style="display: none;">
+                <div class="alert alert-light alert-dismissible fade show shadow" role="alert" id="success-res" style="display: none;">
                     <button type="button" class="close close-scc">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
@@ -58,10 +58,40 @@ Shorten any URL
                 </div>
                 
 
+            </div>
+            <div>
+                <div class="row">
+                    <div class="qr-container" id="qr-container" style="display: none;">
+                        <div class="toggle-btns">
+                            <div class="btn-bg">
+                                <button class="qr-btn" id="t-url-btn">tiny-url</button>
+                            </div>
+                            <div class="btn-bg">
+                                <button class="qr-btn" id="f-url-btn">full-url</button>
+                            </div>
+                        </div>
+                        <div class="qr-code">
+                            <div class="qr-image" id="tiny-url-qr" style="height: 310px;width: 290px;display: block;">
+                                <span>QR code for the Tinyurl</span>
+                                <img src="" alt="" id="tiny_url_qr_pic" height="290" width="290">
+                            </div>
+                            <div class="qr-image" id="full-url-qr" style="height: 310px;width: 290px;display: none;">
+                                <span>QR code for the full url</span>
+                                <img src="" alt="" id="full_url_qr_pic" height="290" width="290">
+                            </div>
+                        </div>
+                        {% if request.META.HTTP_HOST == "127.0.0.1:8000" %}
+                        <div class="local-note">
+                            The tiny url QRcode wont work <br>since you are running this project locally.
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                </div>      
             </div>   
         </div>
         <div class="col-sm-12 col-md-5 col-lg-6 offset-lg-1" id="jj">
-            <div style="margin-top: 100px;"></div>
+            <div style="margin-top: 50px;"></div>
             <h3 class="bga">Most visited</h3>
             <div class="most-visit">
                 {% for i in data %}
@@ -78,18 +108,28 @@ Shorten any URL
                 {% endfor %}
             </div>
         </div>
-    </div>        
+    </div>  
 </div>
-<br><br><br>
+<br>
 <div id="pko90-9" style="display: none;">{{ request.META.HTTP_HOST }}</div>
 <div id="res"></div>
 
 <script>
 $(document).ready(function(){
-
-    $('.close-scc').on('click',function(){$('#success-res').hide();$('html,body').animate({scrollTop:0},1300);});
-    $('.close-err').on('click',function(){$('#error-res').hide();$('html,body').animate({scrollTop:0},1300);});
-
+    $('.close-scc').on('click',function(){
+        $('#qr-container').fadeOut(1900).slideUp(1900);
+        $('#success-res').fadeOut(1700).slideUp(1400);
+        $('html,body').animate({scrollTop:0},2000);
+    });
+    $('.close-err').on('click',function(){$('#error-res').fadeOut(800).slideUp(900);$('html,body').animate({scrollTop:0},1300);});
+    function animateToBottom(success=false){
+        if(success){
+            $('html,body').animate({scrollTop:600},1800);
+        }
+        else{
+            $('html,body').animate({scrollTop:300},1200);
+        }
+    }
     $('#success-res, #error-res').hide();
     $('#form').submit(function(e){
         $('#success-res, #error-res').hide();
@@ -102,9 +142,13 @@ $(document).ready(function(){
             success:function(response){
                 var siteLink = $('#pko90-9').text();
                 $('#success-msg').html(`Link : <a href="http://${siteLink}/${response['tiny_url']}">http://${siteLink}/${response['tiny_url']}</a>`);
+                $('#tiny_url_qr_pic').attr('src',`data:image/png;base64,${response['qr_tiny_url']}`);
+                $('#full_url_qr_pic').attr('src',`data:image/png;base64,${response['qr_full_url']}`);
+                console.log(response['qr_tiny_url'])
                 $('#error-res').hide();
+                $('#qr-container').show();
                 $('#success-res').show();
-                $('html,body').animate({scrollTop:$(document).height()},1500);
+                animateToBottom(success=true);
             },
             error:function(response){
                 var errors = response['responseJSON']['error'];
@@ -113,12 +157,50 @@ $(document).ready(function(){
                     $('#error-msg').append(`${error}<br>`);
                 }
                 $('#error-res').show();
+                $('#qr-container').hide();
                 $('#success-res').hide();
-                $('html,body').animate({scrollTop:$(document).height()},1500);
+                animateToBottom();
             },
-            
-        })
+        });
+        var btn_attr=""
+        const submit_btn= $('#button');
+        $(document).ajaxStart(()=>{
+            btn_attr=submit_btn.attr("value");
+            submit_btn.attr("value","Your link is on the way...");
+        });
+        $(document).ajaxStop(()=>{
+            submit_btn.attr("value","Shorten another..");
+        });
     });
 });
+</script>
+<script>
+    const t_url=document.querySelector("#t-url-btn");
+    const f_url=document.querySelector("#f-url-btn");
+    const t_url_qr = document.getElementById("tiny-url-qr");
+    const f_url_qr = document.getElementById("full-url-qr");
+    const t_url_btn_div = t_url.parentElement;
+    const f_url_btn_div = f_url.parentElement;
+    t_url.classList.add("qr-btn-active")
+    t_url_btn_div.classList.add("btn-bg-clr");
+
+    t_url.addEventListener('click',function(){
+        t_url_qr.style.display="block"
+        f_url_qr.style.display="none";
+        t_url_btn_div.classList.add("btn-bg-clr");
+        f_url_btn_div.classList.remove("btn-bg-clr");
+        t_url.classList.add("qr-btn-active")
+        f_url.classList.remove("qr-btn-active")
+    });
+    
+    f_url.addEventListener('click',function(){
+        t_url_qr.style.display="none";
+        f_url_qr.style.display="block";
+        f_url_btn_div.classList.add("btn-bg-clr");
+        t_url_btn_div.classList.remove("btn-bg-clr");
+        f_url.classList.add("qr-btn-active")
+        t_url.classList.remove("qr-btn-active")
+    })
+
 </script>
 {% endblock %}
